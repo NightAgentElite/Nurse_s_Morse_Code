@@ -141,7 +141,7 @@ StrokeGradient.Parent = OutlineStroke
 -- Hover Sound
 local HoverSound = Instance.new("Sound")
 HoverSound.Name = "Hover"
-HoverSound.Parent = ImageButton
+HoverSound.Parent = Rayfield
 
 -- Data
 HoverSound.EmitterSize = 10
@@ -160,7 +160,7 @@ HoverSound.Looped = false
 HoverSound.PlaybackRegionsEnabled = false
 HoverSound.PlaybackSpeed = 2
 HoverSound.TimePosition = 0.1
-HoverSound.Volume = 0.150
+HoverSound.Volume = 1
 
 -- Regions
 HoverSound.LoopRegion = NumberRange.new(0, 60000)
@@ -178,7 +178,7 @@ HoverSound.SoundGroup = nil
 -- Click Sound
 local ClickSound = Instance.new("Sound")
 ClickSound.Name = "Click"
-ClickSound.Parent = ImageButton
+ClickSound.Parent = Rayfield
 
 -- Data
 ClickSound.EmitterSize = 10
@@ -197,7 +197,7 @@ ClickSound.Looped = false
 ClickSound.PlaybackRegionsEnabled = false
 ClickSound.PlaybackSpeed = 1
 ClickSound.TimePosition = 0
-ClickSound.Volume = 0.5
+ClickSound.Volume = 1
 
 -- Regions
 ClickSound.LoopRegion = NumberRange.new(0, 60000)
