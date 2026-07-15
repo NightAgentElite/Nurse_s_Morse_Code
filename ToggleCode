@@ -1,17 +1,30 @@
 local CoreGui = game:GetService("CoreGui")
 
-local Rayfield = CoreGui
-    :WaitForChild("34ce0a632ae8221d85e8d4c7b13fdb810587df2db4e9558c55e392c1a35a5dd6")
-    :WaitForChild("Rayfield")
+local CoreGui = game:GetService("CoreGui")
+
+local Rayfield
+
+for _, child in ipairs(CoreGui:GetChildren()) do
+    local found = child:FindFirstChild("Rayfield")
+    
+    if found then
+        Rayfield = found
+        break
+    end
+end
+
+if not Rayfield then
+    error("Rayfield not found in CoreGui")
+end
 
 local ImageButton = Instance.new("ImageButton")
-ImageButton.Name = "NoxiusToggleButton"
+ImageButton.Name = "ImageButton"
 ImageButton.Parent = Rayfield
 
 
 ImageButton.Active = true
 ImageButton.Draggable = true
-ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
+ImageButton.AnchorPoint = Vector2.new(0, 0)
 ImageButton.AutoButtonColor = false
 ImageButton.BackgroundColor3 = Color3.fromRGB(255,255,255)
 ImageButton.BackgroundTransparency = 0
@@ -81,22 +94,25 @@ ImageButton.MouseButton1Click:Connect(function()
     DragFrame.Visible = NewState
 end)
 
-local Hide = ImageButton.Parent
+local Topbar = ImageButton.Parent
     :WaitForChild("Main")
     :WaitForChild("Topbar")
-    :WaitForChild("Hide")
 
-Hide:Destroy()
+local Hide = Topbar:FindFirstChild("Hide")
+
+if Hide then
+    Hide:Destroy()
+end
 
 local NoxiusToggleOutline = Instance.new("ImageLabel")
-NoxiusToggleOutline.Name = "NoxiusToggleOutline"
+NoxiusToggleOutline.Name = "ImageOutline"
 NoxiusToggleOutline.Parent = ImageButton
 
-NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
+NoxiusToggleOutline.AnchorPoint = Vector2.new(0, 0)
 NoxiusToggleOutline.BackgroundTransparency = 1
 NoxiusToggleOutline.BackgroundColor3 = Color3.fromRGB(255,255,255)
 NoxiusToggleOutline.BorderSizePixel = 0
-NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
+NoxiusToggleOutline.Position = UDim2.new(0, 0, 0, 0)
 NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
 NoxiusToggleOutline.ZIndex = 100001
 NoxiusToggleOutline.ImageTransparency = 1
