@@ -1,0 +1,100 @@
+local CoreGui = game:GetService("CoreGui")
+
+local Rayfield = CoreGui
+    :WaitForChild("34ce0a632ae8221d85e8d4c7b13fdb810587df2db4e9558c55e392c1a35a5dd6")
+    :WaitForChild("Rayfield")
+
+local ImageButton = Instance.new("ImageButton")
+ImageButton.Name = "NoxiusToggleButton"
+ImageButton.Parent = Rayfield
+
+ImageButton.Active = true
+ImageButton.Draggable = true
+ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
+ImageButton.AutoButtonColor = false
+ImageButton.BackgroundColor3 = Color3.fromRGB(255,255,255)
+ImageButton.BackgroundTransparency = 0
+ImageButton.BorderColor3 = Color3.fromRGB(27,42,53)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.5, -10, 0, 56)
+ImageButton.Size = UDim2.new(0,64,0,64)
+ImageButton.SizeConstraint = Enum.SizeConstraint.RelativeXY
+ImageButton.ZIndex = 100000
+ImageButton.Visible = true
+
+-- Rounded corners
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0,17)
+Corner.Parent = ImageButton
+
+-- Main gradient
+local Gradient = Instance.new("UIGradient")
+Gradient.Rotation = 90
+Gradient.Offset = Vector2.new(0,0)
+Gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(69,69,69)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+})
+Gradient.Parent = ImageButton
+
+
+
+-- Black outer stroke
+local BlackStroke = Instance.new("UIStroke")
+BlackStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+BlackStroke.Color = Color3.fromRGB(0,0,0)
+BlackStroke.Thickness = 3
+BlackStroke.Transparency = 0
+BlackStroke.Parent = ImageButton
+BlackStroke.Enabled = true
+
+-- Light outline
+local Stroke = Instance.new("UIStroke")
+Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+Stroke.Color = Color3.fromRGB(189,189,189)
+Stroke.LineJoinMode = Enum.LineJoinMode.Round
+Stroke.Thickness = 1
+Stroke.Transparency = 0
+Stroke.Parent = ImageButton
+
+local StrokeGradient = Instance.new("UIGradient")
+StrokeGradient.Rotation = 90
+StrokeGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+})
+StrokeGradient.Parent = Stroke
+
+-- UI scale
+local Scale = Instance.new("UIScale")
+Scale.Scale = 0.5
+Scale.Parent = ImageButton
+
+-- Icon
+local ImageLabel = Instance.new("ImageLabel")
+ImageLabel.Name = "ImageLabel"
+ImageLabel.Parent = ImageButton
+
+ImageLabel.Active = false
+ImageLabel.BackgroundTransparency = 1
+ImageLabel.Position = UDim2.new(0,-14,0,-14)
+ImageLabel.Size = UDim2.new(0,92,0,92)
+ImageLabel.ZIndex = 100001
+ImageLabel.Image = "rbxassetid://100574547642033"
+ImageLabel.ImageColor3 = Color3.fromRGB(255,255,255)
+ImageLabel.ScaleType = Enum.ScaleType.Stretch
+
+
+local MainFrame = ImageButton.Parent
+    :WaitForChild("Main")
+
+ImageButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+local Hide = ImageButton.Parent
+    :WaitForChild("Main")
+    :WaitForChild("Topbar")
+    :WaitForChild("Hide")
+
+Hide:Destroy()
