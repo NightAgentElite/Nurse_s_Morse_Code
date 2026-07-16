@@ -375,21 +375,13 @@ end)
 end
 
 for _, Object in ipairs(Rayfield:GetDescendants()) do
-	if Object:IsA("ImageButton") or Object:IsA("TextButton") then
-		ConnectButton(Object)
-	end
+if Object:IsA("ImageButton") or Object:IsA("TextButton") then
+ConnectButton(Object)
+end
 end
 
 Rayfield.DescendantAdded:Connect(function(Object)
-	if Object:IsA("ImageButton") or Object:IsA("TextButton") then
-		ConnectButton(Object)
-	end
-end)
-
-task.wait(1)
-
-for _, Object in ipairs(Rayfield:GetDescendants()) do
-	if Object:IsA("ImageButton") or Object:IsA("TextButton") then
-		ConnectButton(Object)
-	end
+if Object:IsA("ImageButton") or Object:IsA("TextButton") then
+ConnectButton(Object)
+end
 end)
