@@ -2,6 +2,10 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local DKey = loadstring(game:HttpGet("https://raw.githubusercontent.com/36kshania-jpg/ahahexon.lua/refs/heads/main/DKey.lua"))()
 
+local FunFacts = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/FunFacts.lua"))()
+
+local RandomFact = FunFacts[math.random(1, #FunFacts)]
+
 local Window = Rayfield:CreateWindow({
 Name = "Noxius",
 Icon = 100574547642033,
@@ -23,7 +27,7 @@ KeySystem = true,
 KeySettings = {
 Title = "Noxius's Daily Key System.",
 Subtitle = "Enter your key, Obtained from something.",
-Note = "Note: The script is in testing so the key is: cat.",
+Note = "Fun Fact: "..RandomFact,
 
 FileName = "???",
 SaveKey = false,
