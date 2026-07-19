@@ -508,14 +508,15 @@ end
 
 Button:SetAttribute("NoxiusConnected", true)  
 
-Button.MouseEnter:Connect(function()  
-	HoverSound:Play()  
-end)  
-
-Button.MouseButton1Click:Connect(function()  
-	ClickSound:Play()  
+Button.MouseEnter:Connect(function()
+    print("Hover:", Button.Name)
+    HoverSound:Play()
 end)
 
+Button.MouseButton1Click:Connect(function()
+    print("Click:", Button.Name)
+    ClickSound:Play()
+end)
 end
 
 for _, Object in ipairs(Rayfield:GetDescendants()) do
