@@ -502,31 +502,46 @@ ClickSound.SoundGroup = nil
 
 -- Events
 local function ConnectButton(Button)
-if Button:GetAttribute("NoxiusConnected") then
-return
+
+    if Button:GetAttribute("NoxiusConnected") then
+        return
+    end
+
+    Button:SetAttribute("NoxiusConnected", true)
+
+    print("Connected:", Button:GetFullName(), Button.ClassName)
+
+    Button.MouseEnter:Connect(function()
+        HoverSound:Stop()
+        HoverSound.TimePosition = 0
+        HoverSound:Play()
+    end)
+
+    Button.Activated:Connect(function()
+        ClickSound:Stop()
+        ClickSound.TimePosition = 0
+        ClickSound:Play()
+    end)
+
 end
 
-Button:SetAttribute("NoxiusConnected", true)  
-
-Button.MouseEnter:Connect(function()
-    print("Hover:", Button.Name)
-    HoverSound:Play()
-end)
-
-Button.MouseButton1Click:Connect(function()
-    print("Click:", Button.Name)
-    ClickSound:Play()
-end)
-end
 
 for _, Object in ipairs(Rayfield:GetDescendants()) do
-if Object:IsA("ImageButton") or Object:IsA("TextButton") then
-ConnectButton(Object)
-end
+
+    if Object:IsA("GuiButton") then
+        ConnectButton(Object)
+    end
+
 end
 
+
 Rayfield.DescendantAdded:Connect(function(Object)
-if Object:IsA("ImageButton") or Object:IsA("TextButton") then
-ConnectButton(Object)
-end
+
+    if Object:IsA("GuiButton") then
+
+        task.wait()
+        ConnectButton(Object)
+
+    end
+
 end)
