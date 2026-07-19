@@ -68,6 +68,7 @@ local function CreateStrokeOverlay(Button)
     local Overlay = Button:Clone()
 
     Overlay.Name = "Overlay"
+    Overlay.Position = UDim2.new(0,0,0,0)
     Overlay.Size = UDim2.new(
     Button.Size.X.Scale,
     0,
@@ -88,12 +89,6 @@ local function CreateStrokeOverlay(Button)
 
 
     Overlay.Parent = Button
-
-    local CanvasMain = Button:FindFirstChild("Main")
-
-if CanvasMain and CanvasMain:IsA("CanvasGroup") then
-    Overlay.Position = UDim2.new(0,0,0,0)
-    end
 
 
     Overlay.Active = false
@@ -515,10 +510,12 @@ end
 Button:SetAttribute("NoxiusConnected", true)  
 
 Button.MouseEnter:Connect(function()
+    print("Hover:", Button.Name)
     HoverSound:Play()
 end)
 
 Button.MouseButton1Click:Connect(function()
+    print("Click:", Button.Name)
     ClickSound:Play()
 end)
 end
