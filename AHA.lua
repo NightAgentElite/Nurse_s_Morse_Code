@@ -16,8 +16,8 @@ LoadingSubtitle = "Loading and Constructing UI..",
 
 Theme = "Darker",  
 
-ConfigurationSaving = {  
-    Enabled = false,  
+ConfigurationSaving = { 
+    Enabled = true, 
     FolderName = "Noxius AHA",  
     FileName = "AutomaticSave"  
 },  
@@ -117,6 +117,8 @@ Main:CreateToggle({
     end
 })
 
+Main:CreateLabel("Toggles the ability to drag the toggle button.")
+
 local DestroyConfirm = false
 
 Main:CreateButton({
@@ -154,6 +156,8 @@ if not RayfieldGUI then
     error("Rayfield GUI not found in CoreGui")
 end
 
+Main:CreateLabel("Destroys the interface.")
+
 Main:CreateSection(" Developer")
 
 local Version = "v0.0.1"
@@ -173,6 +177,8 @@ Main:CreateButton({
     end
 })
 
+Main:CreateLabel("Notifies you the current version of the script.")
+
 Main:CreateButton({
     Name = "Show Console",
 
@@ -183,7 +189,7 @@ Main:CreateButton({
     end
 })
 
-
+Main:CreateLabel("Shows the Roblox Developer Console.")
 
 Automation:CreateSection(" Player")
 
@@ -280,6 +286,7 @@ end
 
 })
 
+Automation:CreateLabel("Automatically repairs broken security cameras.")
 
 -- 🏥 Auto Check-In
 local AutoCheckInEnabled = false
@@ -481,7 +488,7 @@ Name = "Check-In Delay",
 Range = {0.75, 10},
 Increment = 0.25,
 Suffix = " Seconds",
-CurrentValue = 0.5,
+CurrentValue = 1,
 
 Callback = function(Value)  
     CheckInDelay = Value  
@@ -489,6 +496,7 @@ end
 
 })
 
+Automation:CreateLabel("Automatically completes the patient check-in process.")
 
 local AutoPutOutFire = false
 
@@ -738,6 +746,8 @@ local function ScanPatientFires()
     end)
 end
 
+Automation:CreateLabel("Automatically extinguishes fires in hospital rooms.")
+
 Automation:CreateToggle({
 Name = "Auto Put Out Patient Fire",
 CurrentValue = false,
@@ -754,14 +764,12 @@ end
 
 })
 
-
-
-
+Automation:CreateLabel("Automatically applies ointment and extinguishes burning patients.")
 
 local AutoTrashFaintedPatients = false
 local TrashRunning = false
 
-local TrashFaintedsDelay = 0.15 -- value for slider setting
+local TrashFaintedsDelay = 0.25 -- value for slider setting
 
 
 local TrashTP = CFrame.new(
@@ -970,6 +978,7 @@ Automation:CreateToggle({
     end
 })
 
+
 Automation:CreateSlider({
     Name = "Auto Trash Fainted Patients Delay",
     Range = {0.15, 10},
@@ -981,6 +990,8 @@ Automation:CreateSlider({
         TrashFaintedsDelay = Value
     end
 })
+
+Automation:CreateLabel("Automatically disposes of fainted patients.")
 
 Navigation:CreateSection(" Teleports")
 
@@ -999,6 +1010,8 @@ Navigation:CreateButton({
     end
 })
 
+Navigation:CreateLabel("Teleports you to the office.")
+
 Navigation:CreateButton({
     Name = "Teleport to Medical",
     Callback = function()
@@ -1014,6 +1027,8 @@ Navigation:CreateButton({
     end
 })
 
+Navigation:CreateLabel("Teleports you to the medical hall.")
+
 Navigation:CreateButton({
     Name = "Teleport to Emergency",
     Callback = function()
@@ -1028,6 +1043,8 @@ Navigation:CreateButton({
         end
     end
 })
+
+Navigation:CreateLabel("Teleports you to the emergency hall.")
 
 Navigation:CreateToggle({
     Name = "Teleport Tool",
@@ -1071,6 +1088,8 @@ Navigation:CreateToggle({
     end
 })
 
+Navigation:CreateLabel("Gives you a teleport tool. Click anywhere while having it equipped to teleport to the clicked position.")
+
 Navigation:CreateInput({
     Name = "Teleport To Player",
     CurrentValue = "",
@@ -1105,7 +1124,30 @@ Navigation:CreateInput({
     end
 })
 
+Navigation:CreateLabel("Teleports you to the target player.")
+
 Fun:CreateSection("  Character")
+
+local ThirdPersonEnabled = false
+
+Fun:CreateToggle({
+	Name = "Enable Third Person",
+	CurrentValue = false,
+
+	Callback = function(Value)
+		ThirdPersonEnabled = Value
+
+		local Player = game:GetService("Players").LocalPlayer
+
+		if Value then
+			Player.CameraMode = Enum.CameraMode.Classic
+		else
+			Player.CameraMode = Enum.CameraMode.LockFirstPerson
+		end
+	end
+})
+
+Fun:CreateLabel("Allows you to switch between first and third person.")
 
 local FlipToolsEnabled = false
 
@@ -1277,6 +1319,8 @@ Fun:CreateToggle({
     end
 })
 
+Fun:CreateLabel("Gives you tools that can perform either a backflip or frontflip.")
+
 local SpinEnabled = false
 local SpinSpeed = 10
 local SpinObject = nil
@@ -1351,72 +1395,374 @@ Fun:CreateSlider({
     end
 })
 
+Fun:CreateLabel("Makes you spin with the specified speed.")
+
 Visuals:CreateSection(" ESPs")
 
 local Players = game:GetService("Players")
-local PlayerESPEnabled = false
-local PlayerHighlights = {}
 
-local function AddPlayerHighlight(Character)
-    if not Character then return end
-    if PlayerHighlights[Character] then return end
+local PlayerESPEnabled = false
+local PlayerESPObjects = {}
+
+local LocalPlayer3 = Players.LocalPlayer
+
+
+local function AddPlayerESP(Character)
+
+    if not Character or Character == LocalPlayer3.Character then
+        return
+    end
+
+    if PlayerESPObjects[Character] then
+        return
+    end
+
+
+    local Root = Character:FindFirstChild("HumanoidRootPart")
+
+    if not Root then
+        return
+    end
+
+
+    -- Highlight
 
     local Highlight = Instance.new("Highlight")
     Highlight.Name = "Highlight"
     Highlight.FillColor = Color3.fromRGB(0, 0, 255)
     Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    Highlight.FillTransparency = 0.5
+    Highlight.OutlineTransparency = 0
     Highlight.Adornee = Character
     Highlight.Parent = Character
 
-    PlayerHighlights[Character] = Highlight
+
+    -- Name Billboard
+
+    local Billboard = Instance.new("BillboardGui")
+    Billboard.Name = "BillboardGui"
+    Billboard.Adornee = Root
+    Billboard.Parent = Root
+
+    Billboard.Size = UDim2.fromOffset(150, 40)
+    Billboard.StudsOffset = Vector3.new(0, 0, 0)
+    Billboard.AlwaysOnTop = true
+    Billboard.MaxDistance = 250
+
+    local UIListLayout = Instance.new("UIListLayout")
+
+UIListLayout.Padding = UDim.new(0, -20)
+UIListLayout.FillDirection = Enum.FillDirection.Vertical
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+UIListLayout.Parent = Billboard
+
+    local Text = Instance.new("TextLabel")
+    Text.Parent = Billboard
+    Text.Size = UDim2.fromScale(1, 1)
+    Text.BackgroundTransparency = 1
+    Text.TextScaled = false
+    Text.TextSize = 18
+    Text.Font = Enum.Font.FredokaOne
+    Text.TextColor3 = Color3.fromRGB(0,0,255)
+    Text.TextStrokeTransparency = 0
+    Text.LayoutOrder = 2
+    local Player = Players:GetPlayerFromCharacter(Character)
+
+    local StrokeName = Instance.new("UIStroke")
+StrokeName.Color = Color3.fromRGB(255,255,255)
+StrokeName.Thickness = 1
+StrokeName.Parent = Text
+
+local UsernameText = Text:Clone()
+UsernameText.Parent = Billboard
+UsernameText.Name = "UsernameText"
+UsernameText.LayoutOrder = 1
+
+if Player then
+    UsernameText.Text = "(@" .. Player.Name .. ")"
+else
+    UsernameText.Text = "(@" .. Character.Name .. ")"
 end
 
-local function RemovePlayerHighlights()
-    for _, Highlight in pairs(PlayerHighlights) do
-        if Highlight then
-            Highlight:Destroy()
+    local StrokeUserName = Instance.new("UIStroke")
+StrokeUserName.Color = Color3.fromRGB(255,255,255)
+StrokeUserName.Thickness = 1
+StrokeUserName.Parent = UsernameText
+
+local SanityText = Instance.new("TextLabel")
+SanityText.Parent = Billboard
+SanityText.Size = UDim2.fromScale(1, 1)
+SanityText.BackgroundTransparency = 1
+SanityText.TextScaled = false
+SanityText.TextSize = 18
+SanityText.Font = Enum.Font.FredokaOne
+SanityText.TextColor3 = Color3.fromRGB(0,0,255)
+SanityText.TextStrokeTransparency = 0
+SanityText.LayoutOrder = 3
+
+ local StrokeSanity = Instance.new("UIStroke")
+StrokeSanity.Color = Color3.fromRGB(255,255,255)
+StrokeSanity.Thickness = 1
+StrokeSanity.Parent = SanityText
+
+local Player = Players:GetPlayerFromCharacter(Character)
+
+local function UpdateSanity()
+    if Player then
+        local Sanity = Player:GetAttribute("Sanity")
+
+        if Sanity then
+            SanityText.Text = "Sanity: "..Sanity
+        else
+            SanityText.Text = "Sanity: N/A"
         end
     end
-
-    table.clear(PlayerHighlights)
 end
 
-local function SetupPlayer(Player)
-    Player.CharacterAdded:Connect(function(Character)
-        if PlayerESPEnabled and Player ~= Players.LocalPlayer then
-            task.wait(1)
-            AddPlayerHighlight(Character)
-        end
+UpdateSanity()
+
+if Player then
+    Player:GetAttributeChangedSignal("Sanity"):Connect(function()
+        UpdateSanity()
     end)
 end
 
-local function ScanPlayers()
-    for _, Player in ipairs(Players:GetPlayers()) do
-        if Player ~= Players.LocalPlayer and Player.Character then
-            AddPlayerHighlight(Player.Character)
-        end
-    end
+if Player then
+    Text.Text = Player.DisplayName
+else
+    Text.Text = Character.Name
 end
+
+
+    PlayerESPObjects[Character] = {
+        Highlight = Highlight,
+        Billboard = Billboard
+    }
+
+end
+
+
+
+local function RemovePlayerESP()
+
+    for Character, Objects in pairs(PlayerESPObjects) do
+
+        if Objects.Highlight then
+            Objects.Highlight:Destroy()
+        end
+
+        if Objects.Billboard then
+            Objects.Billboard:Destroy()
+        end
+
+    end
+
+    table.clear(PlayerESPObjects)
+
+end
+
+
+
+local function ScanPlayers()
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+
+        if Player ~= LocalPlayer3 and Player.Character then
+
+            AddPlayerESP(Player.Character)
+
+        end
+
+    end
+
+end
+
+
+
+local function SetupPlayer(Player)
+
+    Player.CharacterAdded:Connect(function(Character)
+
+        task.wait(1)
+
+        if PlayerESPEnabled then
+            AddPlayerESP(Character)
+        end
+
+    end)
+
+end
+
+
 
 for _, Player in ipairs(Players:GetPlayers()) do
     SetupPlayer(Player)
 end
 
+
 Players.PlayerAdded:Connect(SetupPlayer)
+
+
 
 Visuals:CreateToggle({
     Name = "Player ESP",
     CurrentValue = false,
 
     Callback = function(Value)
+
         PlayerESPEnabled = Value
 
         if Value then
+
             ScanPlayers()
+
         else
-            RemovePlayerHighlights()
+
+            RemovePlayerESP()
+
         end
+
     end
 })
 
 Visuals:CreateLabel("Toggles ESP for Players.")
+
+
+local MimicESPEnabled = false
+local MimicHighlights = {}
+
+local MimicFolder = workspace:WaitForChild("NPCs")
+
+local function CheckMimic(npc)
+    if npc:GetAttribute("Skinwalker") or npc.Name == "TallMonster" then
+        
+        if not MimicHighlights[npc] then
+            local Highlight = Instance.new("Highlight")
+            Highlight.Name = "MimicESP"
+            Highlight.FillColor = Color3.fromRGB(255, 0, 0)
+            Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+            Highlight.Adornee = npc
+            Highlight.Parent = npc
+
+            MimicHighlights[npc] = Highlight
+        end
+        
+    end
+end
+
+local function ScanMimics()
+    for _, npc in ipairs(MimicFolder:GetChildren()) do
+        CheckMimic(npc)
+    end
+end
+
+Visuals:CreateToggle({
+    Name = "Mimic ESP",
+    CurrentValue = false,
+
+    Callback = function(Value)
+        MimicESPEnabled = Value
+
+        if Value then
+            ScanMimics()
+        else
+            for _, highlight in pairs(MimicHighlights) do
+                if highlight then
+                    highlight:Destroy()
+                end
+            end
+
+            table.clear(MimicHighlights)
+        end
+    end
+})
+
+MimicFolder.ChildAdded:Connect(function(npc)
+    task.wait(0.5)
+
+    if MimicESPEnabled then
+        CheckMimic(npc)
+    end
+end)
+
+Visuals:CreateLabel("Toggles ESP for Mimics.")
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local Player = Players.LocalPlayer
+
+local NoclipEnabled = false
+local NoclipConnection
+
+local function ToggleNoclip()
+
+    NoclipEnabled = not NoclipEnabled
+
+    if NoclipEnabled then
+
+        NoclipConnection = RunService.Stepped:Connect(function()
+
+            if Player.Character then
+
+                for _, part in pairs(Player.Character:GetDescendants()) do
+
+                    if part:IsA("BasePart") then
+
+                        part.CanCollide = false
+
+                    end
+
+                end
+
+            end
+
+        end)
+
+    else
+
+        if NoclipConnection then
+
+            NoclipConnection:Disconnect()
+
+            NoclipConnection = nil
+
+        end
+
+
+        if Player.Character then
+
+            for _, part in pairs(Player.Character:GetDescendants()) do
+
+                if part:IsA("BasePart") then
+
+                    part.CanCollide = true
+
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+
+LocalPlayer:CreateToggle({
+    Name = "Noclip",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        if Value ~= NoclipEnabled then
+            ToggleNoclip()
+        end
+
+    end
+})
+
+LocalPlayer:CreateLabel("Gives you the ability to phase through objects.")
