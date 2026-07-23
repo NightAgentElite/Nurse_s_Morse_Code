@@ -7,25 +7,25 @@ local FunFacts = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nigh
 local RandomFact = FunFacts[math.random(1, #FunFacts)]
 
 local Window = Rayfield:CreateWindow({
-Name = "Noxius",
+Name = "Morse",
 Icon = 90484559502038,
-ShowText = "Bug",
+ShowText = "Debugs",
 
-LoadingTitle = "Downloading and Preloading assets...",  
-LoadingSubtitle = "Loading and Constructing UI..",  
+LoadingTitle = "Loading UI and Code...",
+LoadingSubtitle = "Checking for Files and Assets..",  
 
 Theme = "Ocean",  
 
 ConfigurationSaving = { 
     Enabled = true, 
-    FolderName = "Noxius AHA",  
+    FolderName = "Morse AHA",  
     FileName = "AutomaticSave"  
 },  
 
 KeySystem = true,
 
 KeySettings = {
-Title = "Noxius's Daily Key System",
+Title = "Morse's Daily Key System",
 Subtitle = "Enter your key, Obtained from something.",
 Note = "Fun Fact: "..RandomFact,
 
