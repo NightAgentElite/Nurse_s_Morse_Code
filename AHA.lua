@@ -1643,7 +1643,7 @@ local function AddMimicESP(npc)
 		return
 	end
 
-	if not (npc:GetAttribute("Skinwalker") or npc.Name == "TallMonster") then
+	if not (npc:GetAttribute("Skinwalker") then
 		return
 	end
 
