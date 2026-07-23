@@ -1990,18 +1990,23 @@ PatientFolder.ChildAdded:Connect(function(npc)
 end)
 
 Visuals:CreateToggle({
-	Name = "Patient ESP",
-	CurrentValue = false,
+    Name = "Patient ESP",
+    CurrentValue = false,
 
-	Callback = function(Value)
-		PatientESPEnabled = Value
+    Callback = function(Value)
+        PatientESPEnabled = Value
 
-		if Value then
-			ScanPatients()
-		else
-			RemovePatientESP()
-		end
-	end
+        if Value then
+            task.spawn(function()
+                while PatientESPEnabled do
+                    ScanPatients()
+                    task.wait(1)
+                end
+            end)
+        else
+            RemovePatientESP()
+        end
+    end
 })
 
 Visuals:CreateLabel("Toggles ESP for Patients.")
