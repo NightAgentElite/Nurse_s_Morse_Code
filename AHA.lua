@@ -1690,12 +1690,42 @@ UIListLayout.Parent = Billboard
 	Text.Font = Enum.Font.FredokaOne
 	Text.TextColor3 = Color3.fromRGB(255, 0, 0)
 	Text.TextStrokeTransparency = 0
+	Text.LayoutOrder = 1
 	Text.TextScaled = false
 
 	local Stroke = Instance.new("UIStroke")
 	Stroke.Color = Color3.fromRGB(255, 255, 255)
 	Stroke.Thickness = 1
 	Stroke.Parent = Text
+
+	local ToRoomText = Instance.new("TextLabel")
+ToRoomText.Parent = Billboard
+ToRoomText.Name = "ToRoom"
+ToRoomText.Size = UDim2.fromScale(1, 1)
+ToRoomText.BackgroundTransparency = 1
+ToRoomText.TextScaled = false
+ToRoomText.TextSize = 18
+ToRoomText.Font = Enum.Font.FredokaOne
+ToRoomText.TextColor3 = Color3.fromRGB(0, 0, 255)
+ToRoomText.TextStrokeTransparency = 0
+ToRoomText.LayoutOrder = 2
+
+local StrokeToRoom = Instance.new("UIStroke")
+StrokeToRoom.Color = Color3.fromRGB(255, 255, 255)
+StrokeToRoom.Thickness = 1
+StrokeToRoom.Parent = ToRoomText
+
+local function UpdateToRoom()
+	if Player then
+		local DesignatedRoom = Player:GetAttribute("DesignatedRoom")
+
+		if DesignatedRoom and DesignatedRoom ~= "" then
+			ToRoomText.Text = "Going to: " .. tostring(DesignatedRoom)
+		else
+			ToRoomText.Text = "Going to: N/A"
+		end
+	end
+	end
 
 	MimicObjects[npc] = {
 		Highlight = Highlight,
