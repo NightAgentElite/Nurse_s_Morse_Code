@@ -1653,7 +1653,7 @@ local function AddMimicESP(npc)
 	end
 
 	local Highlight = Instance.new("Highlight")
-	Highlight.Name = "MimicESP"
+	Highlight.Name = "Highlight"
 	Highlight.FillColor = Color3.fromRGB(255, 0, 0)
 	Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
 	Highlight.FillTransparency = 0.5
@@ -1855,3 +1855,153 @@ LocalPlayer:CreateToggle({
 })
 
 LocalPlayer:CreateLabel("Gives you the ability to phase through objects.")
+
+local PatientESPEnabled = false
+local PatientObjects = {}
+
+local PatientFolder = workspace:WaitForChild("NPCs")
+
+local function AddPatientESP(npc)
+	if PatientObjects[npc] then
+		return
+	end
+
+local IsPatient = npc:GetAttribute("IsPatient")
+local IsSkinwalker = npc:GetAttribute("Skinwalker")
+
+-- Verification:
+-- Must be a patient AND must not be a skinwalker
+if not IsPatient or IsSkinwalker then
+	return
+end
+
+	local Root = npc:FindFirstChild("HumanoidRootPart")
+	if not Root then
+		return
+	end
+
+	local Highlight = Instance.new("Highlight")
+	Highlight.Name = "PatientESP"
+	Highlight.FillColor = Color3.fromRGB(0, 255, 0)
+	Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+	Highlight.FillTransparency = 0.5
+	Highlight.OutlineTransparency = 0
+	Highlight.Adornee = npc
+	Highlight.Parent = npc
+
+	local Billboard = Instance.new("BillboardGui")
+	Billboard.Name = "BillboardGui"
+	Billboard.Adornee = Root
+	Billboard.Parent = Root
+	Billboard.Size = UDim2.fromOffset(150, 40)
+	Billboard.StudsOffset = Vector3.new(0, 0, 0)
+	Billboard.AlwaysOnTop = true
+	Billboard.MaxDistance = 250
+
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Padding = UDim.new(0, -20)
+	UIListLayout.FillDirection = Enum.FillDirection.Vertical
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	UIListLayout.Parent = Billboard
+
+	local Text = Instance.new("TextLabel")
+	Text.Parent = Billboard
+	Text.Name = "Name"
+	Text.Size = UDim2.fromScale(1, 1)
+	Text.BackgroundTransparency = 1
+	Text.Text = npc.Name
+	Text.TextSize = 18
+	Text.Font = Enum.Font.FredokaOne
+	Text.TextColor3 = Color3.fromRGB(0, 255, 0)
+	Text.TextStrokeTransparency = 0
+	Text.LayoutOrder = 1
+	Text.TextScaled = false
+
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Color = Color3.fromRGB(255, 255, 255)
+	Stroke.Thickness = 1
+	Stroke.Parent = Text
+
+	local ToRoomText = Instance.new("TextLabel")
+	ToRoomText.Parent = Billboard
+	ToRoomText.Name = "ToRoom"
+	ToRoomText.Size = UDim2.fromScale(1, 1)
+	ToRoomText.BackgroundTransparency = 1
+	ToRoomText.TextScaled = false
+	ToRoomText.TextSize = 18
+	ToRoomText.Font = Enum.Font.FredokaOne
+	ToRoomText.TextColor3 = Color3.fromRGB(0, 255, 0)
+	ToRoomText.TextStrokeTransparency = 0
+	ToRoomText.LayoutOrder = 2
+
+	local StrokeToRoom = Instance.new("UIStroke")
+	StrokeToRoom.Color = Color3.fromRGB(255, 255, 255)
+	StrokeToRoom.Thickness = 1
+	StrokeToRoom.Parent = ToRoomText
+
+	local function UpdateToRoom()
+		local room = npc:GetAttribute("DesignatedRoom")
+
+		if room then
+			ToRoomText.Text = "Going to: " .. tostring(room)
+		else
+			ToRoomText.Text = "Going to: N/A"
+		end
+	end
+
+	UpdateToRoom()
+
+	npc:GetAttributeChangedSignal("DesignatedRoom"):Connect(UpdateToRoom)
+
+	PatientObjects[npc] = {
+		Highlight = Highlight,
+		Billboard = Billboard
+	}
+end
+
+local function RemovePatientESP()
+	for _, objects in pairs(PatientObjects) do
+		if objects.Highlight then
+			objects.Highlight:Destroy()
+		end
+
+		if objects.Billboard then
+			objects.Billboard:Destroy()
+		end
+	end
+
+	table.clear(PatientObjects)
+end
+
+local function ScanPatients()
+	for _, npc in ipairs(PatientFolder:GetChildren()) do
+		AddPatientESP(npc)
+	end
+end
+
+PatientFolder.ChildAdded:Connect(function(npc)
+	task.wait(0.1)
+
+	if PatientESPEnabled then
+		AddPatientESP(npc)
+	end
+end)
+
+Visuals:CreateToggle({
+	Name = "Patient ESP",
+	CurrentValue = false,
+
+	Callback = function(Value)
+		PatientESPEnabled = Value
+
+		if Value then
+			ScanPatients()
+		else
+			RemovePatientESP()
+		end
+	end
+})
+
+Visuals:CreateLabel("Toggles ESP for Patients.")
